@@ -9,20 +9,20 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 
 // Dashboard components
-import DoughnutChartWrapper from "../../additions/DoughnutChartWrapper";
+import VerticalBarChartWrapper from "../../additions/VerticalBarChartWrapper";
 
 function fetchData() {
-  return ''
+  return "";
 }
 
-export default function Passrate() {
+export default function DurationComparison() {
   const mockData = {
-    labels: ["Passed", "Failed"],
-    datasets: {
-      label: "Projects",
-      backgroundColors: ["success", "error"],
-      data: [95, 5],
-    },
+    labels: ["Product1", "Product2", "Product3", "Product69", "Product420"],
+    datasets: [{
+      label: "Test duration [s]",
+      color: "dark",
+      data: [15, 20, 12, 60, 20]
+    }]
   };
 
   return (
@@ -32,10 +32,9 @@ export default function Passrate() {
         <MDBox mt={4.5}>
           <Grid container spacing={3}>
 
-            <h2>Product name x</h2>
-
-            <DoughnutChartWrapper xs={12} md={12} lg={12} title={"Doughnut Chart"}
-                                  desc={"doughnut chart"} data={mockData} />
+            <VerticalBarChartWrapper xs={12} md={12} lg={12}
+                                     title={"Duration comparison for " + mockData.labels.join(", ")}
+                                     desc={"Test run duration in milliseconds"} data={mockData} />
 
           </Grid>
         </MDBox>

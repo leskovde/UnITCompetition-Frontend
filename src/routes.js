@@ -43,6 +43,8 @@ import Notifications from "layouts/notifications";
 // @mui icons
 import Icon from "@mui/material/Icon";
 import Passrate from "./layouts/passrate";
+import DurationComparison from "./layouts/durationComparison";
+import WeeklyPassrate from "./layouts/weeklyPassrate";
 
 const routes = [
   {
@@ -60,6 +62,22 @@ const routes = [
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/passrate",
     component: <Passrate />,
+  },
+  {
+    type: "collapse",
+    name: "Weekly Pass Rate",
+    key: "weeklyPassrate",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/weeklyPassrate",
+    component: <WeeklyPassrate />,
+  },
+  {
+    type: "collapse",
+    name: "Duration Comparison",
+    key: "durationComparison",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/durationComparison",
+    component: <DurationComparison />,
   },
   {
     type: "collapse",
