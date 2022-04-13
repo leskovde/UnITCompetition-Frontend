@@ -47,7 +47,6 @@ function dataTransform(inputData) {
 		propItem.data = [rate, 100-rate];
 		transofrmedData.push(propItem);
 	}
-
 	return transofrmedData
 }
 
@@ -59,7 +58,7 @@ export default function Passrate() {
 	const labels = ["Passed", "Failed"];
 
 	const [data, dataSet] = useState([])
-	const [from, setFrom] = useState(new Date(new Date().getTime() - 1000*60*60*3).toISOString().substring(0, 19))
+	const [from, setFrom] = useState(new Date(new Date().getTime() - 5000*1000*60*60*3).toISOString().substring(0, 19))
 	const [to, setTo] = useState(new Date(new Date().getTime() + 1000*60*60*2).toISOString().substring(0, 19))
 
 	useEffect(() => {
@@ -82,7 +81,13 @@ export default function Passrate() {
 						<span>&nbsp;&nbsp;</span>
 						<MDInput type="datetime" label="To:" onChange={ (e) => onChange(e, setTo)} value={to} />
 						<span>&nbsp;&nbsp;</span>
-						<MDButton onClick={() => {fetchData(from, to)}} variant="gradient" color="info" size="medium">Submit</MDButton>
+						<MDButton onClick={async () => {
+										let response = await fetchData(from, to);
+										const data = dataTransform(response);
+										dataSet(data);
+										console.log(data)	
+									}
+								} variant="gradient" color="info" size="medium">Submit</MDButton>
 					</Grid>
 				</MDBox>
 
