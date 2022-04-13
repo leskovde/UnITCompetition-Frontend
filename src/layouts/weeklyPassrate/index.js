@@ -11,8 +11,24 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 // Dashboard components
 import VerticalBarChartWrapper from "../../additions/VerticalBarChartWrapper";
 
-function fetchData() {
-  return ''
+async function fetchData() {
+  const from = new Date(new Date().getTime() - 1000*60*60*3).toISOString().substring(0, 19);
+  const to   = new Date(new Date().getTime() + 1000*60*60*2).toISOString().substring(0, 19);
+
+  const data = {
+    from,
+    to
+  }
+
+  const response = await fetch('https://unitchallenge.azurewebsites.net/api/BaseAnalysis/GetWeeklyPassrate', {
+    method: 'POST',
+    mode: 'cors',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  });
+  return response.json();
 }
 
 export default function WeeklyPassrate() {
