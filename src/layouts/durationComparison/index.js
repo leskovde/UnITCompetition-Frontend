@@ -10,6 +10,8 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 
 // Dashboard components
 import VerticalBarChartWrapper from "../../additions/VerticalBarChartWrapper";
+import HorizontalBarChart from "../../examples/Charts/BarCharts/HorizontalBarChart";
+import HorizontalBarChartWrapper from "../../additions/HorizontalBarChartWrapper";
 
 function fetchData() {
   return "";
@@ -32,9 +34,9 @@ export default function DurationComparison() {
         <MDBox mt={4.5}>
           <Grid container spacing={3}>
 
-            <VerticalBarChartWrapper xs={12} md={12} lg={12}
-                                     title={"Duration comparison for " + mockData.labels.join(", ")}
-                                     desc={"Test run duration in milliseconds"} data={mockData} />
+            <HorizontalBarChartWrapper xs={12} md={12} lg={12}
+                                       title={"Duration comparison for " + mockData.labels.join(", ")}
+                                       desc={"Test run duration in milliseconds"} data={mockData} />
 
           </Grid>
         </MDBox>
