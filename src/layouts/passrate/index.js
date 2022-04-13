@@ -21,32 +21,26 @@ function fetchData() {
 }
 
 export default function Passrate() {
+  const mockData = {
+    labels: ["Passed", "Failed"],
+    datasets: {
+      label: "Projects",
+      backgroundColors: ["success", "error"],
+      data: [95, 5],
+    },
+  };
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <h2>Pass Rate</h2>
       <MDBox py={3}>
         <MDBox mt={4.5}>
           <Grid container spacing={3}>
-            <VerticalBarChartWrapper xs={12} md={12} lg={12} title={"Bar Chart"}
-                                     desc={"bar chart"} />
 
-            <ReportsBarChartWrapper xs={12} md={12} lg={12} title={"Bar Chart"}
-                                    desc={"bar chart"} date="just updated"
-            />
-
-            <LineChartWrapper xs={12} md={12} lg={12} title={"Line Chart"}
-                              desc={"line chart"} />
-
-            <ReportsLineChartWrapper xs={12} md={12} lg={12} title={"Line Chart"}
-                                     desc={"line chart"} date="just updated"
-            />
+            <h2>Product name x</h2>
 
             <DoughnutChartWrapper xs={12} md={12} lg={12} title={"Doughnut Chart"}
-                                  desc={"doughnut chart"} />
-
-            <MixedChartWrapper xs={12} md={12} lg={12} title={"Mixed Chart"}
-                               desc={"mixed chart"} />
+                                  desc={"doughnut chart"} data={mockData} />
 
           </Grid>
         </MDBox>
