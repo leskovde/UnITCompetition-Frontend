@@ -4,6 +4,7 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import VerticalBarChartWrapper from "../../additions/VerticalBarChartWrapper";
 import { useState, useEffect } from "react";
+import LineChartWrapper from "../../additions/LineChartWrapper";
 
 async function fetchData() {
 
@@ -68,7 +69,7 @@ export default function WeeklyPassrate() {
 					<Grid container spacing={3}>
 						{
 							data.map((datasets) => {
-								return <VerticalBarChartWrapper key={datasets.name} xs={12} md={12} lg={12}
+								return <LineChartWrapper key={datasets.name} xs={12} md={12} lg={12}
 									title={datasets.name[0]}
 									desc={"Pass rate in %"} data={datasets} />
 							})
