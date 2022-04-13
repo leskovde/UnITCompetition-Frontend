@@ -1,17 +1,17 @@
 /**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
+ =========================================================
+ * Material Dashboard 2 React - v2.1.0
+ =========================================================
 
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
+ * Product Page: https://www.creative-tim.com/product/material-dashboard-react
+ * Copyright 2022 Creative Tim (https://www.creative-tim.com)
 
-Coded by www.creative-tim.com
+ Coded by www.creative-tim.com
 
  =========================================================
 
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ */
 
 // @mui material components
 import Grid from "@mui/material/Grid";
@@ -34,6 +34,12 @@ import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 // Dashboard components
 import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
+import VerticalBarChartWrapper from "../../additions/VerticalBarChartWrapper";
+import ReportsBarChartWrapper from "../../additions/ReportsBarChartWrapper";
+import LineChartWrapper from "../../additions/LineChartWrapper";
+import ReportsLineChartWrapper from "../../additions/ReportsLineChartWrapper";
+import DoughnutChartWrapper from "../../additions/DoughnutChartWrapper";
+import MixedChartWrapper from "../../additions/MixedChartWrapper";
 
 function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
@@ -42,6 +48,11 @@ function Dashboard() {
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox py={3}>
+
+        {/*
+        Grid with statistics cards
+*/}
+
         <Grid container spacing={3}>
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
@@ -53,7 +64,7 @@ function Dashboard() {
                 percentage={{
                   color: "success",
                   amount: "+55%",
-                  label: "than lask week",
+                  label: "than lask week"
                 }}
               />
             </MDBox>
@@ -67,7 +78,7 @@ function Dashboard() {
                 percentage={{
                   color: "success",
                   amount: "+3%",
-                  label: "than last month",
+                  label: "than last month"
                 }}
               />
             </MDBox>
@@ -82,7 +93,7 @@ function Dashboard() {
                 percentage={{
                   color: "success",
                   amount: "+1%",
-                  label: "than yesterday",
+                  label: "than yesterday"
                 }}
               />
             </MDBox>
@@ -97,61 +108,39 @@ function Dashboard() {
                 percentage={{
                   color: "success",
                   amount: "",
-                  label: "Just updated",
+                  label: "Just updated"
                 }}
               />
             </MDBox>
           </Grid>
         </Grid>
+
+        {/*
+        Grid with charts
+*/}
+
         <MDBox mt={4.5}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsBarChart
-                  color="info"
-                  title="website views"
-                  description="Last Campaign Performance"
-                  date="campaign sent 2 days ago"
-                  chart={reportsBarChartData}
-                />
-              </MDBox>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsLineChart
-                  color="success"
-                  title="daily sales"
-                  description={
-                    <>
-                      (<strong>+15%</strong>) increase in today sales.
-                    </>
-                  }
-                  date="updated 4 min ago"
-                  chart={sales}
-                />
-              </MDBox>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsLineChart
-                  color="dark"
-                  title="completed tasks"
-                  description="Last Campaign Performance"
-                  date="just updated"
-                  chart={tasks}
-                />
-              </MDBox>
-            </Grid>
-          </Grid>
-        </MDBox>
-        <MDBox>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={8}>
-              <Projects />
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <OrdersOverview />
-            </Grid>
+            <VerticalBarChartWrapper xs={12} md={12} lg={12} title={"Bar Chart"}
+                                     desc={"bar chart"} />
+
+            <ReportsBarChartWrapper xs={12} md={12} lg={12} title={"Bar Chart"}
+                                    desc={"bar chart"} date="just updated"
+            />
+
+            <LineChartWrapper xs={12} md={12} lg={12} title={"Line Chart"}
+                              desc={"line chart"} />
+
+            <ReportsLineChartWrapper xs={12} md={12} lg={12} title={"Line Chart"}
+                                     desc={"line chart"} date="just updated"
+            />
+
+            <DoughnutChartWrapper xs={12} md={12} lg={12} title={"Doughnut Chart"}
+                                  desc={"doughnut chart"} />
+
+            <MixedChartWrapper xs={12} md={12} lg={12} title={"Mixed Chart"}
+                               desc={"mixed chart"} />
+
           </Grid>
         </MDBox>
       </MDBox>
