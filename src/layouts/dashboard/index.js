@@ -22,120 +22,168 @@ import MDBox from "components/MDBox";
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
-import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
 
-// Data
-import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
-import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
-
 // Dashboard components
-import VerticalBarChartWrapper from "../../additions/VerticalBarChartWrapper";
 import ReportsBarChartWrapper from "../../additions/ReportsBarChartWrapper";
-import LineChartWrapper from "../../additions/LineChartWrapper";
 import ReportsLineChartWrapper from "../../additions/ReportsLineChartWrapper";
-import DoughnutChartWrapper from "../../additions/DoughnutChartWrapper";
 import MixedChartWrapper from "../../additions/MixedChartWrapper";
+import { useEffect, useState } from "react";
+import DoughnutChartWrapper from "../../additions/DoughnutChartWrapper";
 
-function fetchData() {
-	return ''
+
+async function fetchMergedWeeklyPassRateData() {
+
+  const response = await fetch("https://unitchallenge.azurewebsites.net/api/BaseAnalysis/GetMergedWeeklyPassRate", {
+    method: "GET", mode: "cors", headers: {
+      "Content-Type": "application/json"
+    }
+  });
+  return response.json();
+}
+
+
+async function fetchStats() {
+
+  const response = await fetch("https://unitchallenge.azurewebsites.net/api/BaseAnalysis/GetWeeklyStats", {
+    method: "GET", mode: "cors", headers: {
+      "Content-Type": "application/json"
+    }
+  });
+  return response.json();
+}
+
+function getWeekDays() {
+  const weekDays = [];
+  for (let i = 0; i < 7; i++) {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    weekDays.push(date.toLocaleString("en-us", { weekday: "long" }).substring(0, 3));
+  }
+  return weekDays.reverse();
+}
+
+function dataTransform(inputData) {
+  const propItem = {
+    labels: getWeekDays(), datasets: {
+      label: "Tests passed [%]", color: "dark", data: inputData.map(x => x * 100)
+    }
+  };
+
+  return propItem;
+}
+
+function parseStats(inputData) {
+  return {
+    weeklyPassed: inputData.passed,
+    weeklyFailed: inputData.failed,
+    averageDuration: inputData.averageRunTime,
+    numberOfGroups: inputData.numberOfGroups,
+    weeklyPassedDiff: inputData.passedDiff,
+  }
 }
 
 export default function Dashboard() {
-	const { sales, tasks } = reportsLineChartData;
+  const [weeklyPassRateData, weeklyPassRateDataSet] = useState([]);
+  const [weeklyAverageDurationData, weeklyAverageDurationSet] = useState([]);
+  const [weeklyPassed, weeklyPassedSet] = useState([]);
+  const [weeklyFailed, weeklyFailedSet] = useState([]);
+  const [weeklyPassedDiff, weeklyPassedDiffSet] = useState([]);
+  const [numberOfGroups, numberOfGroupsSet] = useState([]);
 
-	return (
-		<DashboardLayout>
-			<DashboardNavbar />
-			<MDBox py={3}>
-				<Grid container spacing={3}>
-					<Grid item xs={12} md={6} lg={3}>
-						<MDBox mb={1.5}>
-							<ComplexStatisticsCard
-								color="dark"
-								icon="weekend"
-								title="Bookings"
-								count={281}
-								percentage={{
-									color: "success",
-									amount: "+55%",
-									label: "than lask week",
-								}}
-							/>
-						</MDBox>
-					</Grid>
-					<Grid item xs={12} md={6} lg={3}>
-						<MDBox mb={1.5}>
-							<ComplexStatisticsCard
-								icon="leaderboard"
-								title="Today's Users"
-								count="2,300"
-								percentage={{
-									color: "success",
-									amount: "+3%",
-									label: "than last month",
-								}}
-							/>
-						</MDBox>
-					</Grid>
-					<Grid item xs={12} md={6} lg={3}>
-						<MDBox mb={1.5}>
-							<ComplexStatisticsCard
-								color="success"
-								icon="store"
-								title="Revenue"
-								count="34k"
-								percentage={{
-									color: "success",
-									amount: "+1%",
-									label: "than yesterday",
-								}}
-							/>
-						</MDBox>
-					</Grid>
-					<Grid item xs={12} md={6} lg={3}>
-						<MDBox mb={1.5}>
-							<ComplexStatisticsCard
-								color="primary"
-								icon="person_add"
-								title="Followers"
-								count="+91"
-								percentage={{
-									color: "success",
-									amount: "",
-									label: "Just updated",
-								}}
-							/>
-						</MDBox>
-					</Grid>
-				</Grid>
+  useEffect(() => {
+    async function fetchWeeklyPassRateData() {
+      let response = await fetchMergedWeeklyPassRateData();
+      const data = dataTransform(response);
+      weeklyPassRateDataSet([data]);
+    }
 
-				<MDBox mt={4.5}>
-					<Grid container spacing={3}>
-						<VerticalBarChartWrapper xs={12} md={12} lg={12} title={"Bar Chart"}
-																		 desc={"bar chart"} />
+    async function fetchWeeklyStats() {
+      let response = await fetchStats();
+      const stats = parseStats(response);
 
-						<ReportsBarChartWrapper xs={12} md={12} lg={12} title={"Bar Chart"}
-																		desc={"bar chart"} date="just updated"
-						/>
+      weeklyAverageDurationSet(stats.averageDuration);
+      weeklyPassedSet(stats.weeklyPassed);
+      weeklyFailedSet(stats.weeklyFailed);
+      weeklyPassedDiffSet(stats.weeklyPassedDiff);
+      numberOfGroupsSet(stats.numberOfGroups);
+    }
 
-						<LineChartWrapper xs={12} md={12} lg={12} title={"Line Chart"}
-															desc={"line chart"} />
+    fetchWeeklyPassRateData();
+    fetchWeeklyStats();
+  }, []);
 
-						<ReportsLineChartWrapper xs={12} md={12} lg={12} title={"Line Chart"}
-																		 desc={"line chart"} date="just updated"
-						/>
+  return (<DashboardLayout>
+      <DashboardNavbar />
+      <MDBox py={3}>
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={6} lg={3}>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                color="success"
+                icon="leaderboard"
+                title="Tests Passed"
+                count={weeklyPassed}
+                percentage={{
+                  color: weeklyPassedDiff > 0.0 ? "success" : "error",
+                  amount: (weeklyPassedDiff >= 0.0 ? "+" + (weeklyPassedDiff * 100).toFixed(2) : (weeklyPassedDiff * 100).toFixed(2)) + "%",
+                  label: "than last week"
+                }}
+              />
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6} lg={3}>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                color="error"
+                icon="leaderboard"
+                title="Tests Failed"
+                count={weeklyFailed}
+                percentage={{
+                  color: weeklyPassedDiff > 0.0 ? "success" : "error",
+                  amount: (weeklyPassedDiff < 0.0 ? "+" + (-weeklyPassedDiff * 100).toFixed(2) : (-weeklyPassedDiff * 100).toFixed(2)) + "%",
+                  label: "than last week"
+                }}
+              />
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6} lg={3}>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                color="dark"
+                icon="leaderboard"
+                title="Number of Test Groups"
+                count={numberOfGroups}
+                percentage={{
+                  color: "info", amount: "281", label: "total groups"
+                }}
+              />
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6} lg={3}>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                icon="leaderboard"
+                title="Average Duration"
+                count={weeklyAverageDurationData + "s"}
+                percentage={{
+                  color: "success", amount: "+3%", label: "faster than last week"
+                }}
+              />
+            </MDBox>
+          </Grid>
+        </Grid>
 
-						<DoughnutChartWrapper xs={12} md={12} lg={12} title={"Doughnut Chart"}
-																	desc={"doughnut chart"} />
+        <MDBox mt={4.5}>
+          <Grid container spacing={3}>
 
-						<MixedChartWrapper xs={12} md={12} lg={12} title={"Mixed Chart"}
-															 desc={"mixed chart"} />
+            <ReportsLineChartWrapper xs={12} md={12} lg={12} title={"Aggregated Weekly Pass Rate"}
+                                     desc={"Test pass rate in %"} date="just updated"
+                                     data={weeklyPassRateData[0]}
+            />
 
-					</Grid>
-				</MDBox>
-			</MDBox>
-		</DashboardLayout>
-	);
+          </Grid>
+        </MDBox>
+      </MDBox>
+    </DashboardLayout>);
 }
