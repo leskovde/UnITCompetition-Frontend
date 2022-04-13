@@ -1,16 +1,20 @@
 import Grid from "@mui/material/Grid";
 import MDBox from "components/MDBox";
 import MDInput from "components/MDInput";
+import MDButton from "components/MDButton";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 
 import DoughnutChartWrapper from "../../additions/DoughnutChartWrapper";
 import { useState, useEffect } from "react";
 
-async function fetchData() {
-	const from = new Date(new Date().getTime() - 1000*60*60*3).toISOString().substring(0, 19);
-	const to   = new Date(new Date().getTime() + 1000*60*60*2).toISOString().substring(0, 19);
-
+async function fetchData(fromData, toData) {
+	let from = new Date(new Date().getTime() - 1000*60*60*24*30).toISOString().substring(0, 19);
+	let to   = new Date(new Date().getTime() + 1000*60*60*2).toISOString().substring(0, 19);
+	if (fromData) {
+		from = fromData;
+		to = toData;
+	}
 	const data = {
 		from,
 		to
@@ -43,14 +47,19 @@ function dataTransform(inputData) {
 		propItem.data = [rate, 100-rate];
 		transofrmedData.push(propItem);
 	}
-
 	return transofrmedData
+}
+
+function onChange(event, fun) {
+  fun(event.target.value);
 }
 
 export default function Passrate() {
 	const labels = ["Passed", "Failed"];
 
 	const [data, dataSet] = useState([])
+	const [from, setFrom] = useState(new Date(new Date().getTime() - 5000*1000*60*60*3).toISOString().substring(0, 19))
+	const [to, setTo] = useState(new Date(new Date().getTime() + 1000*60*60*2).toISOString().substring(0, 19))
 
 	useEffect(() => {
 		async function fetchMyAPI() {
@@ -66,8 +75,22 @@ export default function Passrate() {
 		<DashboardLayout>
 			<DashboardNavbar />
 			<MDBox py={3}>
-				<MDInput py={5} type="datetime" label="From:" value={new Date(new Date().getTime() - 1000*60*60*3).toISOString().substring(0, 19)} />
-				<MDInput type="datetime" label="To:" value={new Date(new Date().getTime() + 1000*60*60*2).toISOString().substring(0, 19)} />
+				<MDBox mt={1}>
+					<Grid ml={5} container spacing={3}>
+						<MDInput  type="datetime"  onChange={ (e) => onChange(e, setFrom)} label="From:" value={from} />
+						<span>&nbsp;&nbsp;</span>
+						<MDInput type="datetime" label="To:" onChange={ (e) => onChange(e, setTo)} value={to} />
+						<span>&nbsp;&nbsp;</span>
+						<MDButton onClick={async () => {
+										let response = await fetchData(from, to);
+										const data = dataTransform(response);
+										dataSet(data);
+										console.log(data)	
+									}
+								} variant="gradient" color="info" size="medium">Submit</MDButton>
+					</Grid>
+				</MDBox>
+
 				<MDBox mt={2}>
 					<Grid container spacing={3}>
 						{
