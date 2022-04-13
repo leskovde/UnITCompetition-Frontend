@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // @mui material components
 import Grid from "@mui/material/Grid";
@@ -28,16 +28,37 @@ import MDAlert from "components/MDAlert";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 
+
+
+async function fetchData() {
+	const response = await fetch('https://unitchallenge.azurewebsites.net/api/BaseAnalysis/Allert', {
+		method: 'GET',
+		mode: 'cors',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+	});
+	return response.json();
+}
+
 function Notifications() {
 
 
-	const alertContent = (name) => (
+	const [data, dataSet] = useState([]);
+
+	useEffect(() => {
+		async function fetchMyAPI() {
+			let response = await fetchData();
+			dataSet(response);
+		}
+	
+		fetchMyAPI()
+	}, []);
+
+
+	const alertContent = (name, info) => (
 		<MDTypography variant="body2" color="white">
-			A simple {name} alert with{" "}
-			<MDTypography component="a" href="#" variant="body2" fontWeight="medium" color="white">
-				an example link
-			</MDTypography>
-			. Give it a click if you like.
+			Product {name}: {info}
 		</MDTypography>
 	);
 
@@ -54,15 +75,11 @@ function Notifications() {
 								<MDTypography variant="h5">Alerts</MDTypography>
 							</MDBox>
 							<MDBox pt={2} px={2}>
-								<MDAlert color="error" dismissible>
-									{alertContent("error")}
+								{data.map((item) => {
+									return <MDAlert key={ item.reason} color={item.severenity === 2 ? "error" : "warning"} dismissible>
+									{alertContent(item.productName, item.reason)}
 								</MDAlert>
-								<MDAlert color="warning" dismissible>
-									{alertContent("warning")}
-								</MDAlert>
-								<MDAlert color="warning" dismissible>
-									{alertContent("warning")}
-								</MDAlert>
+								})}
 							</MDBox>
 						</Card>
 					</Grid>

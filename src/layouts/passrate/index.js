@@ -9,7 +9,7 @@ import DoughnutChartWrapper from "../../additions/DoughnutChartWrapper";
 import { useState, useEffect } from "react";
 
 async function fetchData(fromData, toData) {
-	let from = new Date(new Date().getTime() - 1000*60*60*3).toISOString().substring(0, 19);
+	let from = new Date(new Date().getTime() - 1000*60*60*24*30).toISOString().substring(0, 19);
 	let to   = new Date(new Date().getTime() + 1000*60*60*2).toISOString().substring(0, 19);
 	if (fromData) {
 		from = fromData;

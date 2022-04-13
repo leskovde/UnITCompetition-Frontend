@@ -15,46 +15,40 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import HorizontalBarChartWrapper from "../../additions/HorizontalBarChartWrapper";
 
 async function fetchData() {
-	const response = await fetch('https://unitchallenge.azurewebsites.net/api/BaseAnalysis/GetAvgPassRate', {
-		method: 'GET',
+	let from = new Date(new Date().getTime() - 100000*60*60*24*30).toISOString().substring(0, 19);
+	let to   = new Date(new Date().getTime() + 1000*60*60*2).toISOString().substring(0, 19);
+	const response = await fetch('https://unitchallenge.azurewebsites.net/api/BaseAnalysis/GetTestDurations', {
+		method: 'POST',
 		mode: 'cors',
 		headers: {
 			'Content-Type': 'application/json'
 		},
+		body: JSON.stringify({from, to})
 	});
 	return response.json();
 }
 
 
 function dataTransform(inputData) {
+	const transofrmedData = [{
+		labels: [],
+		datasets: [{
+			label: "Test duration [s]",
+			color: "dark",
+			data: []
+		}]
+	}]
 
-	const transofrmedData = []
-	for (const item of inputData) {
-		const propItem = {
-			label: 'Name',
-			desc: 'Desc',
-			data: [50, 50],
-			backgroundColors: ["success", "error"],
-		}
-		propItem.label = item.name;
-		propItem.desc = item.sfCode;
-		const rate = item.avgPassRate * 100;
-		propItem.data = [rate, 100-rate];
-		transofrmedData.push(propItem);
+		
+	for (const dato of inputData) {
+		transofrmedData[0].labels.push(dato.name)
+		transofrmedData[0].datasets[0].data.push(dato.testDuration)
 	}
+
 	return transofrmedData
 }
 
 export default function DurationComparison() {
-	const mockData = {
-		labels: ["Product1", "Product2", "Product3", "Product69", "Product420"],
-		datasets: [{
-			label: "Test duration [s]",
-			color: "dark",
-			data: [15, 20, 12, 60, 20]
-		}]
-	};
-	
 	const [data, dataSet] = useState([])
 
 	useEffect(() => {
@@ -85,7 +79,7 @@ export default function DurationComparison() {
 
 						<HorizontalBarChartWrapper xs={12} md={12} lg={12}
 																			title={"Duration comparison:"} // for " + mockData.labels.join(", ")}
-																			 desc={"Test run duration in milliseconds"} data={data} />
+																			 desc={"Test run duration in milliseconds"} data={data[0]} />
 
 					</Grid>
 				</MDBox>
