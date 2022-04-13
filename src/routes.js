@@ -42,6 +42,7 @@ import Notifications from "layouts/notifications";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
+import Passrate from "./layouts/passrate";
 
 const routes = [
   {
@@ -51,6 +52,14 @@ const routes = [
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: "/dashboard",
     component: <Dashboard />,
+  },
+  {
+    type: "collapse",
+    name: "Pass Rate",
+    key: "passrate",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/passrate",
+    component: <Passrate />,
   },
   {
     type: "collapse",
